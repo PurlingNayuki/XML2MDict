@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="XML2MDict:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/XML2MDict_jar</output-path>
+    <root id="archive" name="XML2MDict.jar">
+      <element id="module-output" name="XML2MDict" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/dom4j/dom4j-2.0.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
