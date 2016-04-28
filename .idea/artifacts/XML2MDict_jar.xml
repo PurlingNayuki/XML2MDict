@@ -4,6 +4,7 @@
     <root id="archive" name="XML2MDict.jar">
       <element id="module-output" name="XML2MDict" />
       <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/dom4j/dom4j-2.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/commons-cli/commons-cli-1.3.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

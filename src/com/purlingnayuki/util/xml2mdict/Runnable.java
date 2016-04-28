@@ -1,5 +1,7 @@
 package com.purlingnayuki.util.xml2mdict;
 
+import org.apache.commons.cli.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -13,48 +15,64 @@ import java.util.logging.Logger;
  */
  
 public class Runnable {
-    public static void main(String[] args) throws IOException {
+    static Options opts = new Options();
+    static {
+        opts.addOption("c", "css", true, "Assign a CSS sheet to all entries");
+        opts.addOption("h", "help", false, "Show this help message");
+    }
+
+    public static void main(String[] args) throws IOException, ParseException {
         Logger log = Logger.getLogger("!main");
         int count = 0;
+        String css = null;
 
-        if (1 != args.length) {
-            printUsage();
-            System.exit(127);
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cl = parser.parse(opts, args);
+
+        if (cl.hasOption("help") || args.length <= 0) {
+            printUsage(opts);
+            return;
+        }
+        if (cl.hasOption("css")) {
+            css = cl.getOptionValue("css");
         }
 
-        // initiate files
-        File indir  = new File(args[0]);
+        for (String fn: cl.getArgs()) {
+            File in = new File(fn);
 
-        log.info("Input set to " + indir.getAbsolutePath());
-        if (indir.isDirectory()) {
-            String[] xmls = indir.list();
-            for (String fn: xmls) {
-                XMLSource xmlsource = new XMLSource(new File(indir.getAbsolutePath() + File.separator + fn));
-                String output = xmlsource.toMDictSource();
+            log.info("Input set to " + in.getAbsolutePath());
+            if (in.isDirectory()) {
+                String[] xmls = in.list();
+                for (String xml : xmls) {
+                    XMLSource xmlsource = new XMLSource(new File(in.getAbsolutePath() + File.separator + xml));
+                    String output = xmlsource.toMDictSource(css);
+                    if (output != null)
+                        System.out.print(output);
+                    count += 1;
+                }
+            } else {
+                XMLSource xmlsource = new XMLSource(in);
+                String output = xmlsource.toMDictSource(css);
                 if (output != null)
                     System.out.print(output);
                 count += 1;
             }
-        }
-        else {
-            XMLSource xmlsource = new XMLSource(indir);
-            String output = xmlsource.toMDictSource();
-            if (output != null)
-                System.out.print(output);
-            count += 1;
-        }
 
-        log.info(count + " item(s) processed");
+            log.info(count + " item(s) processed");
+        }
     }
 
     /**
      * Print the usage when inappropriate inputs.
      */
-    private static void printUsage() {
-        String jarName = Runnable.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-        if (jarName.endsWith(".jar"))
-            System.out.println("Usage: java -jar " + jarName + " path/to/XML(s)");
+    private static void printUsage(Options opts) {
+        String[] jarName = Runnable.class.getProtectionDomain().getCodeSource().getLocation().getFile().split(File.separator);
+        String cmdEg;
+        if (jarName[jarName.length - 1].endsWith(".jar"))
+            cmdEg = "java -jar " + jarName[jarName.length - 1] + " [-ch] file1|directory1 [file2|directory2] ...";
         else
-            System.out.println("Parameter: path/to/XML(s)");
+            cmdEg = "[-ch] file1|directory1 [file2|directory2] ...";
+        HelpFormatter hf = new HelpFormatter();
+        hf.printHelp(cmdEg, opts);
     }
 }

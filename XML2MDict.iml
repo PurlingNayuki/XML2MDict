@@ -9,5 +9,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="dom4j" level="project" />
+    <orderEntry type="library" name="commons-cli" level="project" />
   </component>
 </module>

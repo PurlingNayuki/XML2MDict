@@ -35,11 +35,17 @@ public class XMLSource {
      * Parse xml file and generate MDict style source.
      * @return  Generated source content
      */
-    public String toMDictSource() {
+    public String toMDictSource(String css) {
         Element element;
+        StringBuilder result = new StringBuilder();
         try {
             element = getElementFromXML(this.in);
-            return getHeadwordByNode(element) + "\r\n" + handleElement(element, new StringBuilder()) + "\r\n</>\r\n";
+            result.append(getHeadwordByNode(element)).append("\r\n");
+            if (css != null)
+                result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(css).append("\">");
+            result.append(handleElement(element, new StringBuilder())).append("\r\n</>\r\n");
+
+            return result.toString();
         }
         catch (DocumentException e) {
             log.warning("Cannot read xml file " + this.in.getAbsolutePath() + ", skipping");
@@ -82,8 +88,9 @@ public class XMLSource {
                 else {
                     String type = elem.attributeValue("type", "");
                     String[] soundfn = fn.split("/");
-                    result.append("<div class=\"sound ").append(type).append("\"><a href=\"sound://").append(soundfn[soundfn.length - 1]).append("\">");
-                    result.append("<img src=\"/snd_").append(type).append(".png\"></a>");
+                    String soundfile = soundfn[soundfn.length - 1].replace('#', '$');
+                    result.append("<div class=\"sound ").append(type).append("\"><a href=\"sound://sounds/").append(soundfile).append("\">");
+                    result.append("<img src=\"/icons/snd_").append(type).append(".png\"></a>");
                 }
                 break;
             default:
