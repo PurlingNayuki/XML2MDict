@@ -30,13 +30,17 @@ public class Runnable {
             String[] xmls = indir.list();
             for (String fn: xmls) {
                 XMLSource xmlsource = new XMLSource(new File(indir.getAbsolutePath() + File.separator + fn));
-                System.out.print(xmlsource.toMDictSource());
+                String output = xmlsource.toMDictSource();
+                if (output != null)
+                    System.out.print(output);
                 count += 1;
             }
         }
         else {
             XMLSource xmlsource = new XMLSource(indir);
-            System.out.print(xmlsource.toMDictSource());
+            String output = xmlsource.toMDictSource();
+            if (output != null)
+                System.out.print(output);
             count += 1;
         }
 
