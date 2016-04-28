@@ -71,15 +71,32 @@ public class XMLSource {
      * @return          Converted HTML body, &lt;div&gt; tags only
      */
     protected String handleElement(Element elem, StringBuilder result) {
-        /* div body */
-        result.append("<div class=\"").append(elem.getName()).append("\"");
-        // attributes
-        Iterator<Attribute> attributeIterator = elem.attributeIterator();
-        while (attributeIterator.hasNext()) {
-            Attribute attr = attributeIterator.next();
-            result.append(" ").append(attr.getName()).append("=\"").append(attr.getData()).append("\"");
+        switch (elem.getName()) {
+            case "sk_img":
+                String fn = elem.attributeValue("file");
+                if (fn == null) {
+                    // Pictures
+                    String src = elem.attributeValue("src");
+                    result.append("<div class=\"img\"><img src=\"/img/").append(src).append("\">");
+                }
+                else {
+                    String type = elem.attributeValue("type", "");
+                    String[] soundfn = fn.split("/");
+                    result.append("<div class=\"sound ").append(type).append("\"><a href=\"sound://").append(soundfn[soundfn.length - 1]).append("\">");
+                    result.append("<img src=\"/snd_").append(type).append(".png\"></a>");
+                }
+                break;
+            default:
+                /* div body */
+                result.append("<div class=\"").append(elem.getName()).append("\"");
+                // attributes
+                Iterator<Attribute> attributeIterator = elem.attributeIterator();
+                while (attributeIterator.hasNext()) {
+                    Attribute attr = attributeIterator.next();
+                    result.append(" ").append(attr.getName()).append("=\"").append(attr.getValue()).append("\"");
+                }
+                result.append(">").append(elem.getTextTrim());
         }
-        result.append(">").append(elem.getTextTrim());
         // cope with all child elements
         Iterator<Element> elementIterator = elem.elementIterator();
         while (elementIterator.hasNext()) {
