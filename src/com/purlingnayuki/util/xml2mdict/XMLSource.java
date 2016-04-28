@@ -8,7 +8,6 @@ import org.dom4j.io.SAXReader;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 
@@ -25,13 +24,17 @@ public class XMLSource {
     /**
      * Constructor for XMLSource class.
      * @param in File instance to input xml or directory that contains xml-s
-     * @param out   File instance to output MDict source file
      */
     public XMLSource(File in) {
         this.in = in;
         log = Logger.getLogger("!" + this.getClass().getName());
     }
 
+
+    /**
+     * Parse xml file and generate MDict style source.
+     * @return  Generated source content
+     */
     public String toMDictSource() {
         Element element;
         try {
@@ -50,24 +53,35 @@ public class XMLSource {
         return doc.getRootElement();
     }
 
+    /**
+     * Get headword by a set rule
+     * @param root  The root element of the xml file
+     * @return      Headword get by the set rule
+     */
     protected String getHeadwordByNode(Element root) {
         // <entry id="a_abbr_e" guid="000000000">(root)<h-g><hwd-g><h id="a_34">A</h>
         return root.element("h-g").element("hwd-g").element("h").getTextTrim();
     }
 
 
-    protected String handleElement(Element curr, StringBuilder result) {
+    /**
+     * Parse a xml file and convert elements into HTML div tags.
+     * @param elem      The root element of the xml file
+     * @param result    Any StringBuilder instance. Used for buffer only
+     * @return          Converted HTML body, &lt;div&gt; tags only
+     */
+    protected String handleElement(Element elem, StringBuilder result) {
         /* div body */
-        result.append("<div class=\"").append(curr.getName()).append("\"");
+        result.append("<div class=\"").append(elem.getName()).append("\"");
         // attributes
-        Iterator<Attribute> attributeIterator = curr.attributeIterator();
+        Iterator<Attribute> attributeIterator = elem.attributeIterator();
         while (attributeIterator.hasNext()) {
             Attribute attr = attributeIterator.next();
             result.append(" ").append(attr.getName()).append("=\"").append(attr.getData()).append("\"");
         }
-        result.append(">").append(curr.getTextTrim());
+        result.append(">").append(elem.getTextTrim());
         // cope with all child elements
-        Iterator<Element> elementIterator = curr.elementIterator();
+        Iterator<Element> elementIterator = elem.elementIterator();
         while (elementIterator.hasNext()) {
             handleElement(elementIterator.next(), result);
         }
