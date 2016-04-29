@@ -68,7 +68,8 @@ public final class OxfordXMLSource extends XMLSource implements Queryable {
         cssInfo.addElement("link")
                 .addAttribute("rel",    "stylesheet")
                 .addAttribute("type",   "text/css")
-                .addAttribute("href",   css);
+                .addAttribute("href",   css)
+                .setText("");
 
         for (File in: this.in) {
             try {
