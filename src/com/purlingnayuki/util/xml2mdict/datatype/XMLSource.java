@@ -3,6 +3,7 @@ package com.purlingnayuki.util.xml2mdict.datatype;
 import org.dom4j.Element;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.util.logging.Logger;
@@ -27,6 +28,10 @@ public class XMLSource implements Queryable {
     public XMLSource(File in) {
         this.in = in;
         log = Logger.getLogger("!" + this.getClass().getName());
+    }
+
+    public XMLSource(String in) throws IOException {
+        this(new File(in));
     }
 
     /**

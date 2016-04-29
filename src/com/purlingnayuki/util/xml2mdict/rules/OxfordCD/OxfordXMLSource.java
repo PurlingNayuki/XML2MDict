@@ -2,10 +2,15 @@ package com.purlingnayuki.util.xml2mdict.rules.OxfordCD;
 
 import com.purlingnayuki.util.xml2mdict.datatype.Queryable;
 import com.purlingnayuki.util.xml2mdict.datatype.XMLSource;
-import org.dom4j.*;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -25,10 +30,29 @@ public final class OxfordXMLSource extends XMLSource implements Queryable {
      * @param in File instance to input xml or directory that contains xml-s
      */
     public OxfordXMLSource(File in) {
-        this.in = in;
+        this.in = new ArrayList<>();
+        this.in.add(in);
         log = Logger.getLogger("!" + this.getClass().getName());
     }
 
+    public OxfordXMLSource(String in) {
+        this(new File(in));
+        log = Logger.getLogger("!" + this.getClass().getName());
+    }
+
+    public OxfordXMLSource(File[] ins) {
+        this.in = new ArrayList<>();
+        Collections.addAll(this.in, ins);
+        log = Logger.getLogger("!" + this.getClass().getName());
+    }
+
+    public OxfordXMLSource(String[] ins) {
+        this.in = new ArrayList<>();
+        for (String fn: ins) {
+            this.in.add(new File(fn));
+        }
+        log = Logger.getLogger("!" + this.getClass().getName());
+    }
 
     /**
      * Parse xml file and generate MDict style source.
@@ -45,18 +69,21 @@ public final class OxfordXMLSource extends XMLSource implements Queryable {
                 .addAttribute("rel",    "stylesheet")
                 .addAttribute("type",   "text/css")
                 .addAttribute("href",   css);
-        try {
-            element = getElementFromXML(this.in);
-            result.append(getHeadword(element)).append("\r\n");
-            if (css != null)
-                result.append(cssInfo.getRootElement().asXML().replace("</link>", ""));
-            result.append(handleElement(element))
-                    .append("\r\n</>\r\n");
 
-            return result.toString();
-        }
-        catch (DocumentException e) {
-            log.warning("Cannot read xml file " + this.in.getAbsolutePath() + ", skipping");
+        for (File in: this.in) {
+            try {
+                element = getElementFromXML(in);
+                result.append(getHeadword(element)).append("\r\n");
+                if (css != null)
+                    result.append(cssInfo.getRootElement().asXML().replace("</link>", ""));
+                result.append(handleElement(element))
+                        .append("\r\n</>\r\n");
+
+                return result.toString();
+            }
+            catch (DocumentException e) {
+                log.warning("Cannot read xml file " + in.getAbsolutePath() + ", skipping");
+            }
         }
         return null;
     }
@@ -129,6 +156,6 @@ public final class OxfordXMLSource extends XMLSource implements Queryable {
 
 
 
-    private File in;
+    private ArrayList<File> in;
     private Logger log;
 }

@@ -21,7 +21,7 @@ public class Runnable {
     static {
         opts.addOption("c", "css",  true,   "Assign a CSS sheet to all entries");
         opts.addOption("h", "help", false,  "Show this help message");
-        opts.addOption("t", "type", true,   "Assign the xml type of the input file(s)")
+        opts.addOption("t", "type", true,   "Assign the xml type of the input file(s)");
     }
 
     public static void main(String[] args) throws IOException, ParseException {
