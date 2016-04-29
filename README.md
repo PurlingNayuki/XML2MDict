@@ -23,7 +23,7 @@ A Java library is provided to read xml files and convert them to MDict source. T
 ### Convert Using Existing Rules
 With the library added, you may create a XMLSource instance and use `toMDictSource()` method to convert:
 ```java
-import com.purlingnayuki.util.xml2mdict.XMLSource;
+import com.purlingnayuki.util.xml2mdict.datatype.XMLSource;
 import com.purlingnayuki.util.xml2mdict.rules.OxfordCD;
 // ....
 File xml = new File("path/to/file.xml");
@@ -43,4 +43,4 @@ for (String fn: xmls) {
     System.out.print(xmlsource.toMDictSource(null));
 ```
 ### Convert by Original Rules
-The `XMLSource` class is extendable. It includes a default constructor that simply record an input File as a parameter and `String toMDictSource()` conversion method. It also implements `Queryable` interface which requires a querying method  `String getHeadword(Element)`. Derive the class to fit your source xml file(s) format.
+The `XMLSource` class is extendable. It includes a default constructor that simply record an input File as a parameter and `String toMDictSource(String)` conversion method. It also implements `Queryable` interface which requires a querying method  `String getHeadword(Element)` . Derive the class to fit your source xml file(s) format.
