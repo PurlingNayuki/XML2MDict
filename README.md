@@ -20,13 +20,14 @@ If you need to assign css file, use `-c` or `--css` option:
 
 ## Java Library Usage
 A Java library is provided to read xml files and convert them to MDict source. The XMLSource class is extendable and may need to be modified to fit situations.
-### Conversion API
+### Convert Using Existing Rules
 With the library added, you may create a XMLSource instance and use `toMDictSource()` method to convert:
 ```java
 import com.purlingnayuki.util.xml2mdict.XMLSource;
+import com.purlingnayuki.util.xml2mdict.rules.OxfordCD;
 // ....
 File xml = new File("path/to/file.xml");
-XMLSource xmlsource = new XMLSource(xml);
+XMLSource xmlsource = new OxfordXMLSource(xml);
 System.out.print(xmlsource.toMDictSource(cssPath));
 ```
 If no css file needed or assigned, pass `null` to `toMDictSource()`:
@@ -38,12 +39,8 @@ Note that the construct of XMLSource accepts *ONLY* a file, not a directory. If 
 ```java
 String[] xmls = indir.list();
 for (String fn: xmls) {
-    XMLSource xmlsource = new XMLSource(new File(indir.getAbsolutePath() + File.separator + fn));
+    XMLSource xmlsource = new OxfordXMLSource(new File(indir.getAbsolutePath() + File.separator + fn));
     System.out.print(xmlsource.toMDictSource(null));
 ```
-
-### Headword Setup in `getHeadwordByNode()`
-The `String getHeadwordByNode(Element)` method is used to set up headword for each item. If other rules must be applied to get headword from xml files, derive XMLSource class and override this method.
-
-### Images, audios and other elements in `handleElement()`
-Elements are handled in `String handleElement(Element, StringBuilder)` method. If any tags that need to be handled exceptionally, derive the XMLSource class and override this method.
+### Convert by Original Rules
+The `XMLSource` class is extendable. It includes a default constructor that simply record an input File as a parameter and `String toMDictSource()` conversion method. It also implements `Queryable` interface which requires a querying method  `String getHeadword(Element)`. Derive the class to fit your source xml file(s) format.
