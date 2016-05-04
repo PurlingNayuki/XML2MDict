@@ -1,4 +1,5 @@
-# XML2MDict: A Java Implement of XML to MDict Source Converter
+# XML2MDict
+## A Java Implement of More Than a XML to MDict Source Converter
 ---
 
 ## Commandline Utility Usage
@@ -6,7 +7,7 @@ To convert a single xml file, just run
 
 ` java -jar xml2mdict.jar file.xml`
 
-If a bunch of files are to be converted, palce them in a directory and run
+If a bunch of files are to be converted, place them in a directory and run
 
 ` java -jar xml2mdict.jar file1.xml file2.xml ...`
 
@@ -31,8 +32,8 @@ File[] files = new File[size];
 // ....
 Provider provider = new OxfordXMLSource(files, true);
 Converter converter = new MDictConverter(provider);
-converter.setParameter("css", youCssString).convert(); // if you need to assign css file;
-converter.convert(); // if no need to assign css file
+String resultWithCss = converter.setParameter("css", youCssString).convert(); // if you need to assign css file;
+String result = converter.convert(); // if no need to assign css file
 ```
 
 Note that the Provider class _won't_ handle directory, at least for now. If need to handle directories, add the files in them to the ArrayList:
@@ -67,6 +68,6 @@ File[] files;
 // ....
 Provider provider = new myProvider(files);
 Converter converter = new myConverter(provider);
-converter.setParameter("setSomeParameters", "ifNeeded").converter;
+String result = converter.setParameter("setSomeParameters", "ifNeeded").converter;
 ```
 **If you create a new Provider or Converter, a pull request is always welcome.**
