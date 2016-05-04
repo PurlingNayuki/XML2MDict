@@ -1,11 +1,14 @@
 package com.purlingnayuki.util.xml2mdict;
 
-import com.purlingnayuki.util.xml2mdict.datatype.XMLSource;
-import com.purlingnayuki.util.xml2mdict.rules.OxfordCD.OxfordXMLSource;
+import com.purlingnayuki.util.xml2mdict.Converter.MDictConverter;
+import com.purlingnayuki.util.xml2mdict.Provider.OxfordCD.OxfordXMLSource;
+import com.purlingnayuki.util.xml2mdict.datatype.Converter;
 import org.apache.commons.cli.*;
+import org.dom4j.DocumentException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -28,6 +31,7 @@ public class Runnable {
         Logger log = Logger.getLogger("!main");
         int count = 0;
         String css = null;
+        ArrayList<File> allFiles = new ArrayList<>();
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cl = parser.parse(opts, args);
@@ -43,25 +47,24 @@ public class Runnable {
         for (String fn: cl.getArgs()) {
             File in = new File(fn);
 
-            log.info("Input set to " + in.getAbsolutePath());
             if (in.isDirectory()) {
-                String[] xmls = in.list();
-                for (String xml : xmls) {
-                    XMLSource xmlsource = new OxfordXMLSource(new File(in.getAbsolutePath() + File.separator + xml));
-                    String output = xmlsource.toMDictSource(css);
-                    if (output != null)
-                        System.out.print(output);
-                    count += 1;
-                }
-            } else {
-                XMLSource xmlsource = new OxfordXMLSource(in);
-                String output = xmlsource.toMDictSource(css);
-                if (output != null)
-                    System.out.print(output);
-                count += 1;
+                for (File f: in.listFiles())
+                    if (f != null)
+                        allFiles.add(f);
             }
+            else {
+                allFiles.add(in);
+            }
+        }
 
-            log.info(count + " item(s) processed");
+        try {
+            Converter conv = new MDictConverter(new OxfordXMLSource(allFiles.toArray(new File[allFiles.size()]), true));
+            ArrayList<String> dist = conv.setParameter("css", css).convert();
+            for (String result: dist)
+                System.out.println(result);
+        }
+        catch (DocumentException e) {
+            e.printStackTrace();
         }
     }
 

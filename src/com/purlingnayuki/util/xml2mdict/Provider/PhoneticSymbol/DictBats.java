@@ -1,7 +1,9 @@
-package com.purlingnayuki.util.xml2mdict.rules.OxfordCD;
+package com.purlingnayuki.util.xml2mdict.Provider.PhoneticSymbol;
+
+import com.purlingnayuki.util.xml2mdict.datatype.PhoneticSymbol;
 
 /**
- * Title      : PhoneticSymbol.java
+ * Title      : DictBats.java
  * Description:
  * Copyright  : BY-NC-SA 3.0
  *
@@ -9,8 +11,8 @@ package com.purlingnayuki.util.xml2mdict.rules.OxfordCD;
  * @version 1.0
  */
 
-public class PhoneticSymbol {
-    public PhoneticSymbol(String str) {
+public class DictBats extends PhoneticSymbol {
+    public DictBats(String str) {
         psData = str;
     }
 

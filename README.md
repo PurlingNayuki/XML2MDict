@@ -23,24 +23,50 @@ A Java library is provided to read xml files and convert them to MDict source. T
 ### Convert Using Existing Rules
 With the library added, you may create a XMLSource instance and use `toMDictSource()` method to convert:
 ```java
-import com.purlingnayuki.util.xml2mdict.datatype.XMLSource;
-import com.purlingnayuki.util.xml2mdict.rules.OxfordCD;
+import com.purlingnayuki.util.xml2mdict.Converter.MDictConverter;
+import com.purlingnayuki.util.xml2mdict.Provider.OxfordCD.OxfordXMLSource;
+import com.purlingnayuki.util.xml2mdict.datatype.Converter;
 // ....
-File xml = new File("path/to/file.xml");
-XMLSource xmlsource = new OxfordXMLSource(xml);
-System.out.print(xmlsource.toMDictSource(cssPath));
-```
-If no css file needed or assigned, pass `null` to `toMDictSource()`:
-```java
-toMDictSource(null);
+File[] files = new File[size];
+// ....
+Provider provider = new OxfordXMLSource(files, true);
+Converter converter = new MDictConverter(provider);
+converter.setParameter("css", youCssString).convert(); // if you need to assign css file;
+converter.convert(); // if no need to assign css file
 ```
 
-Note that the construct of XMLSource accepts *ONLY* a file, not a directory. If files are to be converted, use a loop:
+Note that the Provider class _won't_ handle directory, at least for now. If need to handle directories, add the files in them to the ArrayList:
 ```java
-String[] xmls = indir.list();
-for (String fn: xmls) {
-    XMLSource xmlsource = new OxfordXMLSource(new File(indir.getAbsolutePath() + File.separator + fn));
-    System.out.print(xmlsource.toMDictSource(null));
+// ....
+if (in.isDirectory())
+    for (String fn: in.list()) {
+        File file = new File(fn);
+        if (!file.isDirectory())
+            arrayList.add(file);
+    }
+// ....
 ```
 ### Convert by Original Rules
-The `XMLSource` class is extendable. It includes a default constructor that simply record an input File as a parameter and `String toMDictSource(String)` conversion method. It also implements `Queryable` interface which requires a querying method  `String getHeadword(Element)` . Derive the class to fit your source xml file(s) format.
+To create your own rules, you need to extends or implement one of or both `Provider` class and `Converter` interface. You need to implement method below:
+```java
+public abstract class Provider {
+    public abstract ArrayList<Element> getHeadwords(); // to get all headwords from ArrayList<File>
+    public abstract String getContent(Element elem); // to get content body corresponds to input Element
+}
+```
+```java
+public interface Converter {
+    ArrayList<String> convert() throws DocumentException; // to generate formatted content from all input files
+    Converter setParameter(String name, String value); // to specify parameter of this converter, for example to control output format
+}
+```
+
+Once you complete the job, you can call your Provider and Converter:
+```java
+File[] files;
+// ....
+Provider provider = new myProvider(files);
+Converter converter = new myConverter(provider);
+converter.setParameter("setSomeParameters", "ifNeeded").converter;
+```
+**If you create a new Provider or Converter, a pull request is always welcome.**

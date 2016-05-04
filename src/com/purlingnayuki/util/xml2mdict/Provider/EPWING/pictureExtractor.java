@@ -1,4 +1,4 @@
-package com.purlingnayuki.util.xml2mdict.rules.EPWING;
+package com.purlingnayuki.util.xml2mdict.Provider.EPWING;
 
 import java.io.*;
 
