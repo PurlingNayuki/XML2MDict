@@ -29,7 +29,10 @@ public class Config {
 
     public String get(String name) {
         Element cfg = this.cfg.getRootElement();
-        return cfg.element(name).getText();
+        if (cfg.element(name) != null)
+            return cfg.element(name).getText();
+
+        return null;
     }
 
     private Document cfg;

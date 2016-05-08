@@ -1,6 +1,7 @@
 package com.purlingnayuki.util.xml2mdict;
 
 import com.purlingnayuki.util.xml2mdict.Converter.MDictConverter;
+import com.purlingnayuki.util.xml2mdict.Provider.Lingoes.LingoesSource;
 import com.purlingnayuki.util.xml2mdict.Provider.OxfordCD.OxfordXMLSource;
 import com.purlingnayuki.util.xml2mdict.datatype.Converter;
 import com.purlingnayuki.util.xml2mdict.datatype.Provider;
@@ -85,6 +86,9 @@ public class Runnable {
                 case "oxfordxml":
                     provider = new OxfordXMLSource(allFiles.toArray(new File[allFiles.size()]), true);
                     break;
+                case "lingoes":
+                    provider = new LingoesSource(allFiles.toArray(new File[allFiles.size()]), true);
+                    break;
                 default:
                     printUsage(opts);
                     log.severe("Invalid input format.");
@@ -94,6 +98,8 @@ public class Runnable {
             switch (outputFormat.toLowerCase()) {
                 case "mdict":
                     conv = new MDictConverter(provider);
+                    if (css != null)
+                        conv.setParameter("css", css);
                     break;
                 default:
                     printUsage(opts);
@@ -102,7 +108,7 @@ public class Runnable {
             }
 
 
-            ArrayList<String> dist = conv.setParameter("css", css).convert();
+            ArrayList<String> dist = conv.convert();
             for (String result: dist)
                 System.out.println(result);
         }
