@@ -52,7 +52,7 @@ public class LingoesSource extends Provider {
             try {
                 reader = new BufferedReader(new FileReader(file));
                 while ((line = reader.readLine()) != null) {
-                    sepResult = line.split(" = ");
+                    sepResult = line.split(" = ", 2);
                     Element curr = root.addElement("entry_" + counter);
                     curr.setText(sepResult[0]);
                     curr.addElement("def").setText(sepResult[1]);
