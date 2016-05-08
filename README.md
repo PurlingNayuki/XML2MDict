@@ -5,19 +5,21 @@
 ## Commandline Utility Usage
 To convert a single xml file, just run
 
-` java -jar xml2mdict.jar file.xml`
+` java -jar xml2mdict.jar --from OxfordXML --to MDict file.xml`
 
 If a bunch of files are to be converted, place them in a directory and run
 
-` java -jar xml2mdict.jar file1.xml file2.xml ...`
+` java -jar xml2mdict.jar --from OxfordXML --to MDict file1.xml file2.xml ...`
 
 or
 
-` java -jar xml2mdict.jar directory`
+` java -jar --from OxfordXML --to MDict xml2mdict.jar directory`
+
+The `--from` and `--to` options are used to specify the input format and output format to determine which provider and converter should be called.
 
 If you need to assign css file, use `-c` or `--css` option:
 
-`java -jar --css style.css xml2mdict.jar file.xml`
+`java -jar --from OxfordXML --to MDict --css style.css xml2mdict.jar file.xml`
 
 ## Java Library Usage
 A Java library is provided to read xml files and convert them to MDict source. The XMLSource class is extendable and may need to be modified to fit situations.
