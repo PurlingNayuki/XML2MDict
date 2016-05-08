@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
  
 public class Runnable {
-    static Options opts = new Options();
+    private static Options opts = new Options();
     static {
         opts.addOption("c", "css",  true,   "Assign a CSS sheet to all entries");
         opts.addOption("h", "help", false,  "Show this help message");
