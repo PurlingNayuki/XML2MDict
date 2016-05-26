@@ -60,6 +60,12 @@ public final class OxfordXMLSource extends Provider {
      * @return          Converted HTML body, &lt;div&gt; tags only
      */
     public String getContent(Element elem) {
+        handleElement(elem.getDocument().getRootElement());
+        return elem.getDocument().getRootElement().asXML();
+    }
+
+    private void handleElement(Element elem) {
+        log.info("Handling: " + elem.getName());
         switch (elem.getName()) {
             case "sk_img":
                 String fn = elem.attributeValue("file");
@@ -98,8 +104,7 @@ public final class OxfordXMLSource extends Provider {
         // cope with all child elements
         Iterator<Element> elementIterator = elem.elementIterator();
         while (elementIterator.hasNext()) {
-            getContent(elementIterator.next());
+            handleElement(elementIterator.next());
         }
-        return elem.getDocument().getRootElement().asXML();
     }
 }
